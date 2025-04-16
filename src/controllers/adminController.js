@@ -38,6 +38,48 @@ const getBestProfession = async (req, res) => {
   });
 };
 
-module.exports = {
-  getBestProfession
-};
+const getBestClients = async (req, res) => {
+    const { start, end, limit = 2 } = req.query;
+  
+    if (!start || !end) {
+      return res.status(400).json({ error: 'start and end dates are required' });
+    }
+  
+    const result = await Job.findAll({
+      where: {
+        paid: true,
+        paymentDate: {
+          [Op.between]: [new Date(start), new Date(end)]
+        }
+      },
+      include: {
+        model: Contract,
+        include: {
+          model: Profile,
+          as: 'Client',
+          attributes: ['id', 'firstName', 'lastName']
+        }
+      },
+      attributes: [],
+      group: ['Contract.Client.id'],
+      order: [[fn('sum', col('price')), 'DESC']],
+      limit: parseInt(limit),
+      raw: true,
+      nest: true
+    });
+  
+    const clients = result.map(r => ({
+      id: r.Contract.Client.id,
+      fullName: `${r.Contract.Client.firstName} ${r.Contract.Client.lastName}`,
+      paid: parseFloat(r['sum(price)'])
+    }));
+  
+    res.json(clients);
+  };
+  
+  module.exports = {
+    getBestProfession,
+    getBestClients
+  };
+  
+
