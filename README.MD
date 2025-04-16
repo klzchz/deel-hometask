@@ -23,6 +23,11 @@ Every request that requires authentication must send a header:
 profile_id: <number>
 ```
 This represents the current profile making the request. The server uses it to load the associated Profile.
+```
+profile_id: 1
+```
+use this above to auth in the headers 
+
 
 ## 📌 API Documentation
 
