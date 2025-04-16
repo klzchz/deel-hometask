@@ -5,6 +5,7 @@ const { getProfile } = require('./middleware/getProfile');
 
 const contractRoutes = require('./routes/contractRoutes');
 const jobRoutes = require('./routes/jobRoutes');
+const balanceRoutes = require('./routes/balanceRoutes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -14,5 +15,6 @@ app.set('models', sequelize.models);
 
 app.use(contractRoutes); // the organized routes
 app.use(jobRoutes);
+app.use(balanceRoutes);
 
 module.exports = app;
